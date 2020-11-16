@@ -1,13 +1,19 @@
 var issueContainerEl = document.querySelector("#issues-container")
+var limitWarningEl = document.querySelector("#limit-warning")
 
-var getRepoIssues = function(repo) {
+var getRepoIssues = function (repo) {
     var apiUrl = "https://api.github.com/repos/" + repo + "/issues?direction=asc";
 
-    fetch(apiUrl).then(function(response) {
+    fetch(apiUrl).then(function (response) {
         // request was successful
-        if(response.ok) {
-            response.json().then(function(data) {
+        if (response.ok) {
+            response.json().then(function (data) {
                 displayIssues(data)
+
+                // check if api has paginated issues
+                if (response.headers.get("Link")) {
+                    displayWarning(repo)
+                }
             });
         } else {
             alert("There was a problem with your request!")
@@ -15,9 +21,23 @@ var getRepoIssues = function(repo) {
     });
 };
 
-var displayIssues = function(issues) {
+var displayWarning = function (repo) {
+    console.log(limitWarningEl)
+    //add text to warning container
+    limitWarningEl.textContent = "To see more that 30 issues, visit ";
 
-    if(issues.length === 0) {
+    var linkEl = document.createElement("a");
+    linkEl.textContent = "See More Issues on GitHub.com";
+    linkEl.setAttribute("href", "https://github.com/" + repo + "/issues");
+    linkEl.setAttribute("target", "_blank");
+
+    // append to warning container
+    limitWarningEl.appendChild(linkEl);
+}
+
+var displayIssues = function (issues) {
+
+    if (issues.length === 0) {
         issueContainerEl.textContent = "This repo has no open issues!";
         return;
     }
@@ -40,7 +60,7 @@ var displayIssues = function(issues) {
         var typeEl = document.createElement("span");
 
         // check if issue is a pull request or not
-        if(issues[i].pull_request) {
+        if (issues[i].pull_request) {
             tupeEl.textContent = "(Pull Request)";
         } else {
             typeEl.textContent = "(Issue)"
