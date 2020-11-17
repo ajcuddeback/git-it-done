@@ -35,7 +35,6 @@ var getRepoIssues = function (repo) {
 };
 
 var displayWarning = function (repo) {
-    console.log(limitWarningEl)
     //add text to warning container
     limitWarningEl.textContent = "To see more that 30 issues, visit ";
 
@@ -43,6 +42,7 @@ var displayWarning = function (repo) {
     linkEl.textContent = "See More Issues on GitHub.com";
     linkEl.setAttribute("href", "https://github.com/" + repo + "/issues");
     linkEl.setAttribute("target", "_blank");
+
 
     // append to warning container
     limitWarningEl.appendChild(linkEl);
@@ -61,6 +61,7 @@ var displayIssues = function (issues) {
         issueEl.classList = "list-item flex-row justify-space-between align-center";
         issueEl.setAttribute("href", issues[i].html_url);
         issueEl.setAttribute("target", "_blank");
+
 
         // create span to hold issue title
         var titleEl = document.createElement("span");
@@ -85,5 +86,4 @@ var displayIssues = function (issues) {
     };
 };
 
-getRepoIssues();
 getRepoName();
